@@ -1,0 +1,152 @@
+/* Shared layout tokens for the Voyage landing sections. */
+
+.nav {
+  pointer-events: auto;
+}
+
+.cta {
+  pointer-events: auto;
+}
+
+/* Section framing. The base section has pointer-events disabled on its
+   outer wrapper so the WebGL canvas (behind everything) still receives
+   pointer/raycast events; cards/buttons/links inside re-enable. */
+.section {
+  position: relative;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(2, 3, 5, 0.86) 0%, rgba(2, 3, 5, 0.94) 100%);
+}
+
+.sectionInner {
+  pointer-events: none;
+}
+
+/* Make all interactive elements in a section clickable. */
+.section a,
+.section button,
+.section input,
+.section select,
+.section textarea {
+  pointer-events: auto;
+}
+
+.eyebrow {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-neon);
+  font-weight: 500;
+}
+
+.sectionTitle {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--text-ink);
+  text-wrap: balance;
+}
+
+.accent {
+  color: var(--accent-neon);
+}
+
+/* Generic content card used by Features, Pricing, etc. */
+.card {
+  position: relative;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(15, 18, 24, 0.55) 0%, rgba(8, 10, 14, 0.55) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 320ms ease, background 320ms ease;
+  pointer-events: auto;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0, 240, 255, 0.55);
+  background: linear-gradient(180deg, rgba(15, 18, 24, 0.7) 0%, rgba(8, 10, 14, 0.7) 100%);
+}
+
+.cardHighlighted {
+  border-color: rgba(0, 240, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.2), 0 30px 60px -30px rgba(0, 240, 255, 0.4);
+}
+
+.popularBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 240, 255, 0.55);
+  color: var(--accent-neon);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(0, 240, 255, 0.08);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 500;
+}
+
+.primaryBtn {
+  pointer-events: auto;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.9rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 320ms ease;
+}
+
+.primaryBtn:hover {
+  transform: scale(1.05);
+  background: var(--accent-neon);
+}
+
+.secondaryBtn {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  font-weight: 500;
+  border-radius: 9999px;
+  padding: 0.9rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background-color 320ms ease, transform 320ms ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.outlineNeonBtn {
+  pointer-events: auto;
+  background: transparent;
+  color: #ffffff;
+  font-weight: 500;
+  border-radius: 9999px;
+  padding: 0.9rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  transition: background-color 320ms ease, color 320ms ease, transform 320ms ease;
+}
+
+.outlineNeonBtn:hover {
+  background: var(--accent-neon);
+  color: #000000;
+}
+
+

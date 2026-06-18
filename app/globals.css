@@ -1,0 +1,402 @@
+@layer theme, base, clerk, components, utilities;
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* Dark Tech (Obsidian / Neon) */
+  --bg-obsidian: oklch(0 0 0);
+  --bg-surface: oklch(0.24 0.02 260);
+  --bg-glass: oklch(1 0 0 / 0.04);
+  --text-ink: oklch(0.98 0 0);
+  --text-muted: oklch(0.75 0.01 260);
+  --accent-neon: oklch(0.85 0.15 220);
+  /* Red neon used for warning / interactive flags. */
+  --neon-warn: oklch(0.72 0.22 24);
+  --void: var(--bg-obsidian);
+  --ink: var(--text-ink);
+  --muted: var(--text-muted);
+  --neon: var(--accent-neon);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-void: var(--void);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-neon: var(--neon);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+html,
+body {
+  background: var(--bg-obsidian);
+  color: var(--text-ink);
+  /* Full-height SPA shell: every page is a h-[100dvh] root, so
+     * we lock the document scroll and let inner panels manage their
+     * own overflow-y-auto. This prevents the native page
+     * scrollbar from ever showing. */
+  height: 100%;
+  overflow: hidden;
+}
+
+
+/* Transparent scrollbar utility. Keeps scroll behavior intact
+   (mouse wheel, trackpad, keyboard) while hiding the bar. We
+   preserve 0 width on WebKit so the layout doesn't shift, and
+   use `none` on Firefox. */
+
+/* Twinkling star background. Each star is a 1-2px dot with a
+   randomized opacity, scale, delay and duration; the animation is
+   GPU-friendly (opacity only) and runs entirely on the compositor. */
+.star-twinkle {
+  animation-name: star-twinkle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  will-change: opacity;
+  /* Glow is set per-star via inline boxShadow so it scales with
+   * the dot's size (3px to 10px). */
+}
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.18;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.15);
+  }
+}
+
+/* Liquid-glass surface utility.
+   - Layered translucent background: a tinted gradient + a soft
+     inner highlight + a thin gradient border.
+   - backdrop-filter for the true glass feel (Safari needs the
+     `-webkit-` prefix). */
+.liquid-glass {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 240, 255, 0.04) 100%),
+    rgba(8, 10, 14, 0.55);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 12px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+}
+.liquid-glass-strong {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(0, 240, 255, 0.06) 100%),
+    rgba(8, 10, 14, 0.7);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 20px 60px rgba(0, 0, 0, 0.55);
+  border-radius: 20px;
+}
+.liquid-glass-bubble, .liquid-glass-bubble-refract {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%),
+    rgba(20, 24, 32, 0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 6px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 16px;
+}
+/* Animated sheen that sweeps across a glass surface once. Used for
+   the composer to make it feel reactive. */
+@keyframes liquid-sheen {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(110%); }
+}
+.liquid-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.liquid-sheen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.10) 45%,
+    rgba(0, 240, 255, 0.10) 55%,
+    transparent 100%
+  );
+  animation: liquid-sheen 5.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-twinkle {
+    animation: none !important;
+  }
+}
+
+.scrollbar-transparent {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Edge legacy */
+}
+.scrollbar-transparent::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+  /* Some Chromium variants still paint a track even with width: 0;
+   * hiding the entire pseudo-element is the only fully reliable way
+   * to suppress the bar across WebKit / Blink. */
+  display: none;
+}
+.scrollbar-transparent::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.scrollbar-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+  max-width: 70ch;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+
+/* Liquid-glass surface utility.
+   - Layered translucent background: a tinted gradient + a soft
+     inner highlight + a thin gradient border.
+   - backdrop-filter for the true glass feel (Safari needs the
+     `-webkit-` prefix). */
+.liquid-glass {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 240, 255, 0.04) 100%),
+    rgba(8, 10, 14, 0.55);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 12px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+}
+.liquid-glass-strong {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(0, 240, 255, 0.06) 100%),
+    rgba(8, 10, 14, 0.7);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 20px 60px rgba(0, 0, 0, 0.55);
+  border-radius: 20px;
+}
+.liquid-glass-bubble, .liquid-glass-bubble-refract {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%),
+    rgba(20, 24, 32, 0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 6px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 16px;
+}
+/* Animated sheen that sweeps across a glass surface once. Used for
+   the composer to make it feel reactive. */
+@keyframes liquid-sheen {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(110%); }
+}
+.liquid-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.liquid-sheen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.10) 45%,
+    rgba(0, 240, 255, 0.10) 55%,
+    transparent 100%
+  );
+  animation: liquid-sheen 5.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+
+
+
+
+
+/* --- Cursor-driven neon refraction for liquid-glass surfaces. ---
+   The element receives two CSS variables on pointer-move:
+     --rf-x, --rf-y   : 0..1, position of the cursor inside the box.
+     --rf-p           : 0..1, "presence" — fades in on enter, out on leave.
+   We render a radial neon-blue gradient that's masked to a 1.5px ring
+   so it looks like the glass is refracting light at its border. The
+   gradient follows the cursor. */
+.liquid-glass-bubble,
+.liquid-glass-bubble-refract,
+.liquid-glass,
+.liquid-glass-strong {
+  position: relative;
+  isolation: isolate;
+}
+.liquid-glass-bubble::before,
+.liquid-glass-bubble-refract::before,
+.liquid-glass::before,
+.liquid-glass-strong::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: radial-gradient(
+    180px circle at calc(var(--rf-x, 0.5) * 100%) calc(var(--rf-y, 0.5) * 100%),
+    rgba(0, 240, 255, calc(0.55 * var(--rf-p, 0))) 0%,
+    rgba(0, 200, 255, calc(0.25 * var(--rf-p, 0))) 28%,
+    rgba(0, 180, 255, 0) 55%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 220ms ease-out;
+  z-index: 1;
+}
+.liquid-glass-bubble:hover,
+.liquid-glass:hover,
+.liquid-glass-strong:hover {
+  /* The hook sets --rf-p on hover; this just makes the inner
+     content sit above the refraction ring. */
+}
+.liquid-glass-bubble > *,
+.liquid-glass > *,
+.liquid-glass-strong > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Standalone hook: any element can opt in by adding `.glass-refract`
+   and updating --rf-x / --rf-y / --rf-p via JS. The ring is drawn
+   on a pseudo-element so it never intercepts pointer events. */
+.glass-refract {
+  position: relative;
+  isolation: isolate;
+}
+.glass-refract::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: radial-gradient(
+    200px circle at calc(var(--rf-x, 0.5) * 100%) calc(var(--rf-y, 0.5) * 100%),
+    rgba(0, 240, 255, calc(0.7 * var(--rf-p, 0))) 0%,
+    rgba(0, 200, 255, calc(0.3 * var(--rf-p, 0))) 30%,
+    rgba(0, 180, 255, 0) 60%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+.glass-refract > * {
+  position: relative;
+  z-index: 2;
+}
