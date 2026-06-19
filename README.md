@@ -1,3 +1,12 @@
+## social links 
+[yc style intro](https://x.com/shay_ik/status/2067562208020815936?s=20) <br>
+regular updates on social media - <br>
+[day0](https://x.com/shay_ik/status/2063676013113209190?s=20) <br>
+[day1](https://x.com/shay_ik/status/2064761198739145102?s=20) <br>
+[frontend video](https://x.com/shay_ik/status/2065049553456554391?s=20) <br>
+[Sneak Peak](https://x.com/shay_ik/status/2066927321165246967?s=20) <br>
+[Demo video of product](https://x.com/shay_ik/status/2067918979277201740?s=20)
+
 # [Voyage](https://voyage.atishayjain.engineer)
 
 **Your AI-powered workspace that talks to your inbox and calendar.**
